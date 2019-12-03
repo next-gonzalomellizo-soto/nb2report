@@ -14,7 +14,7 @@ from pathlib import Path
 from nb2report.cell_utils import is_list, is_title, get_first_line
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)  # ToDo: INFO
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger('nb2report')
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -60,7 +60,7 @@ def _setup_base_dir(framework, version):
     Path
         Complete path to the root testing directory.
     """
-    framework_path = Path(BASE_DIR) / framework
+    framework_path = Path(os.getcwd()) / framework
     current_path = framework_path / version
 
     if not framework_path.exists():
@@ -171,7 +171,7 @@ def _generate_notebooks(enum_source, current_path):
         splitted = re.split(r'^ *\*+ +', item)  # remove list markdown token: *
         if len(splitted) > 1:  # if regex matched
             title = splitted[1].strip() + '.ipynb'
-            copyfile(TEMPLATE_NOTEBOOK_PATH, current_path / title)
+            copyfile(str(TEMPLATE_NOTEBOOK_PATH), str(current_path / title))
 
 
 def _create_scaffolding(framework, version, cells):
@@ -266,7 +266,6 @@ def create(framework_name, framework_version, test_schema):
     test_schema: str
         Path to the test schema markdown notebook.
     """
-    logger.debug('HOLAAAAA')
     if not (os.path.exists(test_schema) and os.path.isfile(test_schema)):
         m = 'Input schema file "{}" does not exist'.format(test_schema)
         logger.error(m)

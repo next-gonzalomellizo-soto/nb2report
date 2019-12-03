@@ -16,7 +16,7 @@ from IPython.testing.globalipapp import get_ipython
 from IPython.utils.io import capture_output
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)  # ToDo: INFO
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger('nb2report')
 
 IPYTHON_INTERPRETER = None
@@ -39,7 +39,7 @@ def _explore_scaffolding(path, scaffold, level=0):
 
     Parameters
     ----------
-    path: str
+    path: Path
         Absolute path to explore.
     scaffold: dict
         Currently explored scaffold.
@@ -51,7 +51,7 @@ def _explore_scaffolding(path, scaffold, level=0):
     dict
         Explored scaffold.
     """
-    if os.path.isdir(path):
+    if os.path.isdir(str(path)):
         if path not in scaffold['dirs']:
             scaffold['dirs'][path] = {'dirs': {}, 'files': {}}
 
@@ -59,10 +59,10 @@ def _explore_scaffolding(path, scaffold, level=0):
                 _add_report(path.name, '', REPORTING_COLORS[level])
 
         [_explore_scaffolding(path / x, scaffold['dirs'][path], level + 1)
-         for x in os.listdir(path)]
-    elif Path(path).suffix == 'ipynb':
+         for x in os.listdir(str(path))]
+    elif path.suffix == 'ipynb':
         logger.debug('Add report %s' % path)
-        _add_report(path.name, _execute_test(path), REPORTING_COLORS[-1])
+        _add_report(path.name, _execute_test(str(path)), REPORTING_COLORS[-1])
 
     return scaffold
 
@@ -296,7 +296,7 @@ def generate_summary(framework_name, framework_version):
     framework_version: str
         Framework version.
     """
-    test_root_path = BASE_DIR / framework_name / framework_version
+    test_root_path = Path(os.getcwd()) / framework_name / framework_version
     reporting_path = test_root_path / REPORTING_FILE_NAME
 
     _explore_scaffolding(
@@ -308,7 +308,7 @@ def generate_summary(framework_name, framework_version):
     env = jinja2.Environment(loader=loader)
     template = env.get_template('')
 
-    with open(reporting_path, 'w') as f:
+    with open(str(reporting_path), 'w') as f:
         f.writelines(template.render(dict(
             title='Test summary for {} {}'.format(
                 framework_name,
