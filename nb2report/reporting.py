@@ -59,8 +59,8 @@ def _explore_scaffolding(path, scaffold, level=0):
                 _add_report(path.name, '', REPORTING_COLORS[level])
 
         [_explore_scaffolding(path / x, scaffold['dirs'][path], level + 1)
-         for x in os.listdir(str(path))]
-    elif path.suffix == 'ipynb':
+         for x in os.listdir(str(path)) if x != '.ipynb_checkpoints']
+    elif path.suffix == '.ipynb':
         logger.debug('Add report %s' % path)
         _add_report(path.name, _execute_test(str(path)), REPORTING_COLORS[-1])
 
