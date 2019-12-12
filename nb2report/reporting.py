@@ -39,7 +39,7 @@ def _explore_scaffolding(path, scaffold, level=0):
 
     Parameters
     ----------
-    path: Path
+    path: pathlib.PosixPath
         Absolute path to explore.
     scaffold: dict
         Currently explored scaffold.
@@ -51,7 +51,7 @@ def _explore_scaffolding(path, scaffold, level=0):
     dict
         Explored scaffold.
     """
-    if os.path.isdir(str(path)):
+    if path.stem[0] != '.' and path.is_dir():
         if path not in scaffold['dirs']:
             scaffold['dirs'][path] = {'dirs': {}, 'files': {}}
 
@@ -59,7 +59,7 @@ def _explore_scaffolding(path, scaffold, level=0):
                 _add_report(path.name, '', REPORTING_COLORS[level])
 
         [_explore_scaffolding(path / x, scaffold['dirs'][path], level + 1)
-         for x in os.listdir(str(path)) if x != '.ipynb_checkpoints']
+         for x in os.listdir(str(path))]
     elif path.suffix == '.ipynb':
         logger.debug('Add report %s' % path)
         _add_report(path.name, _execute_test(str(path)), REPORTING_COLORS[-1])

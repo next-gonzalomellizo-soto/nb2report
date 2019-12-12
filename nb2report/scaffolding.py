@@ -57,7 +57,7 @@ def _setup_base_dir(framework, version):
 
     Returns
     -------
-    Path
+    Path: pathlib.PosixPath
         Complete path to the root testing directory.
     """
     framework_path = Path(os.getcwd()) / framework
@@ -164,7 +164,7 @@ def _generate_notebooks(enum_source, current_path):
     ----------
     enum_source: list(str)
         List containing all notebook names to generate.
-    current_path: str
+    current_path: pathlib.PosixPath
         Complete current path.
     """
     for item in enum_source:
@@ -216,7 +216,7 @@ def _level_in(current_path, new_title):
 
     Parameters
     ----------
-    current_path: str
+    current_path: pathlib.PosixPath
         Current absolute path.
     new_title: str
         Title of the new path.
@@ -240,7 +240,7 @@ def _level_out(current_path):
 
     Parameters
     ----------
-    current_path: str
+    current_path: pathlib.PosixPath
         Current absolute path.
 
     Returns
